@@ -20,8 +20,25 @@ class Report {
             data.extra.lines,
             data.TP
         )
-
     }
+
+    static toNodeArray(reports) {
+        let nodeArray = [];
+        for (const report of reports) {
+            try {
+                let ast = parseToAST(report.lines);
+                let nodes = ASTToArray(ast);
+                nodeArray.push(nodes);
+            } catch (error) {
+                continue;
+            }
+        }
+
+        logger.debug('AST Nodes:', nodeArray.length);
+
+        return nodeArray;
+    }
+
 }
 
 function buildBF(data) {
@@ -30,29 +47,24 @@ function buildBF(data) {
 
     logger.info('Building Bloom Filter with data:', results.length);
 
-    let reports = [];
+    let tp_reports = [];
+    let fp_reports = [];
 
     // 过滤所有非 js 类的报告
     for (const report of results) {
 
         let r = Report.fromSemgrep(report);
         if (r) {
-            reports.push(r);
+            if (r.tp == '1') {
+                tp_reports.push(r);
+            } else {
+                fp_reports.push(r);
+            }
         }
     }
 
-    let nodeArray = [];
-    for (const report of reports) {
-        try {
-            let ast = parseToAST(report.lines);
-            let nodes = ASTToArray(ast);
-            nodeArray.push(nodes);
-        } catch (error) {
-            continue;
-        }
-    }
-
-    logger.debug('AST Nodes:', nodeArray.length);
+    logger.info('TP Reports:', Report.toNodeArray(tp_reports).length);
+    logger.info('FP Reports:', Report.toNodeArray(fp_reports).length);
 
 }
 
