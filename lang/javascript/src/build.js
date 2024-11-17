@@ -1,10 +1,11 @@
 const logger = require('./log.js');
+const { parseToAST, ASTToArray } = require('./ast.js');
 
 class Report {
     constructor(type, message, lines, tp) {
         this.type = type;
         this.message = message;
-        this.lines = lines;
+        this.lines = lines.trim().startsWith('return ') ? lines.trim().substring(7) : lines;
         this.tp = tp;
     }
 
@@ -27,7 +28,7 @@ function buildBF(data) {
 
     let results = data.results;
 
-    logger.info( 'Building Bloom Filter with data:', results.length);
+    logger.info('Building Bloom Filter with data:', results.length);
 
     let reports = [];
 
@@ -40,9 +41,18 @@ function buildBF(data) {
         }
     }
 
+    let nodeArray = [];
     for (const report of reports) {
-        logger.debug(report.type)
+        try {
+            let ast = parseToAST(report.lines);
+            let nodes = ASTToArray(ast);
+            nodeArray.push(nodes);
+        } catch (error) {
+            continue;
+        }
     }
+
+    logger.debug('AST Nodes:', nodeArray.length);
 
 }
 

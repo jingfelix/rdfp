@@ -8,12 +8,18 @@ importers:
 
   .:
     dependencies:
+      ast-types:
+        specifier: ^0.14.2
+        version: 0.14.2
       bloom-filters:
         specifier: ^3.0.3
         version: 3.0.3
       commander:
         specifier: ^12.1.0
         version: 12.1.0
+      esprima:
+        specifier: ^4.0.1
+        version: 4.0.1
       node-color-log:
         specifier: ^12.0.1
         version: 12.0.1
@@ -22,6 +28,10 @@ packages:
 
   '@types/seedrandom@3.0.8':
     resolution: {integrity: sha512-TY1eezMU2zH2ozQoAFAQFOPpvP15g+ZgSfTZt31AUUH/Rxtnz3H+A/Sv1Snw2/amp//omibc+AEkTaA8KUeOLQ==}
+
+  ast-types@0.14.2:
+    resolution: {integrity: sha512-O0yuUDnZeQDL+ncNGlJ78BiO4jnYI3bvMsD5prT0/nsgijG/LpNBIr63gTjVTNsiGkgQhiyCShTgxt8oXOrklA==}
+    engines: {node: '>=4'}
 
   base64-arraybuffer@1.0.2:
     resolution: {integrity: sha512-I3yl4r9QB5ZRY3XuJVEPfc2XhZO6YweFPI+UovAzn+8/hb3oJ6lnysaFcjVpkCPfVWFUDvoZ8kmVDP7WyRtYtQ==}
@@ -37,6 +47,11 @@ packages:
 
   cuint@0.2.2:
     resolution: {integrity: sha512-d4ZVpCW31eWwCMe1YT3ur7mUDnTXbgwyzaL320DrcRT45rfjYxkt5QWLrmOJ+/UEAI2+fQgKe/fCjR8l4TpRgw==}
+
+  esprima@4.0.1:
+    resolution: {integrity: sha512-eGuFFw7Upda+g4p+QHvnW0RyTX/SVeJBDM/gCtMARO0cLuT2HcEKnTPvhjV6aGeqrCB/sbNop0Kszm0jsaWU4A==}
+    engines: {node: '>=4'}
+    hasBin: true
 
   is-buffer@2.0.5:
     resolution: {integrity: sha512-i2R6zNFDwgEHJyQUtJEk0XFi1i0dPFn/oqjK3/vPCcDeJvW5NQ83V8QbicfF1SupOaB0h8ntgBC2YiE7dfyctQ==}
@@ -63,12 +78,19 @@ packages:
   seedrandom@3.0.5:
     resolution: {integrity: sha512-8OwmbklUNzwezjGInmZ+2clQmExQPvomqjL7LFqOYqtmuxRgQYqOD3mHaU+MvZn5FLUeVxVfQjwLZW/n/JFuqg==}
 
+  tslib@2.8.1:
+    resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
+
   xxhashjs@0.2.2:
     resolution: {integrity: sha512-AkTuIuVTET12tpsVIQo+ZU6f/qDmKuRUcjaqR+OIvm+aCBsZ95i7UVY5WJ9TMsSaZ0DA2WxoZ4acu0sPH+OKAw==}
 
 snapshots:
 
   '@types/seedrandom@3.0.8': {}
+
+  ast-types@0.14.2:
+    dependencies:
+      tslib: 2.8.1
 
   base64-arraybuffer@1.0.2: {}
 
@@ -89,6 +111,8 @@ snapshots:
 
   cuint@0.2.2: {}
 
+  esprima@4.0.1: {}
+
   is-buffer@2.0.5: {}
 
   lodash.eq@4.0.0: {}
@@ -104,6 +128,8 @@ snapshots:
   reflect-metadata@0.1.14: {}
 
   seedrandom@3.0.5: {}
+
+  tslib@2.8.1: {}
 
   xxhashjs@0.2.2:
     dependencies:

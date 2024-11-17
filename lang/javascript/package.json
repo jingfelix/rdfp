@@ -11,8 +11,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "ast-types": "^0.14.2",
     "bloom-filters": "^3.0.3",
     "commander": "^12.1.0",
+    "esprima": "^4.0.1",
     "node-color-log": "^12.0.1"
   }
 }
