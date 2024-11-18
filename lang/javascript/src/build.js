@@ -1,5 +1,9 @@
 const logger = require('./log.js');
 const { parseToAST, ASTToArray } = require('./ast.js');
+const { BloomFilter } = require('bloom-filters');
+
+
+const errRate = 0.01;
 
 class Report {
     constructor(type, message, lines, tp) {
@@ -47,8 +51,8 @@ function buildBF(data) {
 
     logger.info('Building Bloom Filter with data:', results.length);
 
-    let tp_reports = [];
-    let fp_reports = [];
+    let tpReports = [];
+    let fpReports = [];
 
     // 过滤所有非 js 类的报告
     for (const report of results) {
@@ -56,15 +60,35 @@ function buildBF(data) {
         let r = Report.fromSemgrep(report);
         if (r) {
             if (r.tp == '1') {
-                tp_reports.push(r);
+                tpReports.push(r);
             } else {
-                fp_reports.push(r);
+                fpReports.push(r);
             }
         }
     }
 
-    logger.info('TP Reports:', Report.toNodeArray(tp_reports).length);
-    logger.info('FP Reports:', Report.toNodeArray(fp_reports).length);
+    const tpNodeArray = Report.toNodeArray(tpReports);
+    const fpNodeArray = Report.toNodeArray(fpReports);
+
+    logger.info('TP Reports:', tpNodeArray.length);
+    logger.info('FP Reports:', fpNodeArray.length);
+
+    const toStringArray = (nodeArray) => {
+        let strArray = [];
+        for (const nodes of nodeArray) {
+            let str = JSON.stringify(nodes);
+            strArray.push(str);
+        }
+        return strArray;
+    }
+
+    let tpFilter = BloomFilter.from(toStringArray(tpNodeArray), errRate);
+    let fpFilter = BloomFilter.from(toStringArray(fpNodeArray), errRate);
+
+    // // TEST
+    // for (const nodes of fpNodeArray) {
+    //     logger.debug('Filter TEST:', tpFilter.has(JSON.stringify(nodes)), fpFilter.has(JSON.stringify(nodes)));
+    // }
 
 }
 
