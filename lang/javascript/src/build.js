@@ -1,51 +1,11 @@
 const logger = require('./log.js');
-const { parseToAST, ASTToArray } = require('./ast.js');
 const { BloomFilter } = require('bloom-filters');
-
+const { Report } = require('./model.js');
+const fs = require('fs');
 
 const errRate = 0.01;
 
-class Report {
-    constructor(type, message, lines, tp) {
-        this.type = type;
-        this.message = message;
-        this.lines = lines.trim().startsWith('return ') ? lines.trim().substring(7) : lines;
-        this.tp = tp;
-    }
-
-    static fromSemgrep(data) {
-        if (!data.check_id.startsWith('javascript.')) {
-            return null;
-        }
-
-        return new Report(
-            data.check_id,
-            data.extra.message,
-            data.extra.lines,
-            data.TP
-        )
-    }
-
-    static toNodeArray(reports) {
-        let nodeArray = [];
-        for (const report of reports) {
-            try {
-                let ast = parseToAST(report.lines);
-                let nodes = ASTToArray(ast);
-                nodeArray.push(nodes);
-            } catch (error) {
-                continue;
-            }
-        }
-
-        logger.debug('AST Nodes:', nodeArray.length);
-
-        return nodeArray;
-    }
-
-}
-
-function buildBF(data) {
+function buildBF(data, split) {
 
     let results = data.results;
 
@@ -67,6 +27,25 @@ function buildBF(data) {
         }
     }
 
+    function getRandomSubset(arr, percentage) {
+        const shuffled = arr.sort(() => 0.5 - Math.random());
+        const subsetSize = Math.floor(arr.length * percentage);
+        return shuffled.splice(0, subsetSize); // 使用 splice 确保原数组不包含测试集数据
+    }
+
+    // 分别随机选择 TP 和 FP 中的 10% 作为测试集
+    if (split) {
+        const tpTest = getRandomSubset(tpReports, 0.1);
+        const fpTest = getRandomSubset(fpReports, 0.1);
+    
+        logger.info('TP Test:', tpTest.length);
+        logger.info('FP Test:', fpTest.length);
+
+        // 保存测试集到文件
+        fs.writeFileSync('tpTest.json', JSON.stringify(tpTest, null, 2));
+        fs.writeFileSync('fpTest.json', JSON.stringify(fpTest, null, 2));
+    }
+
     const tpNodeArray = Report.toNodeArray(tpReports);
     const fpNodeArray = Report.toNodeArray(fpReports);
 
@@ -85,11 +64,12 @@ function buildBF(data) {
     let tpFilter = BloomFilter.from(toStringArray(tpNodeArray), errRate);
     let fpFilter = BloomFilter.from(toStringArray(fpNodeArray), errRate);
 
-    // // TEST
-    // for (const nodes of fpNodeArray) {
-    //     logger.debug('Filter TEST:', tpFilter.has(JSON.stringify(nodes)), fpFilter.has(JSON.stringify(nodes)));
-    // }
+    // Save filters to file
+    const tpFilterData = tpFilter.saveAsJSON();
+    const fpFilterData = fpFilter.saveAsJSON();
 
+    fs.writeFileSync('tpFilter.json', JSON.stringify(tpFilterData, null, 2));
+    fs.writeFileSync('fpFilter.json', JSON.stringify(fpFilterData, null, 2));
 }
 
 module.exports = { buildBF };
