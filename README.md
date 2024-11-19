@@ -16,10 +16,10 @@ Jellfyfin-web 代码仓库的的已标注数据最多，因此选择该数据集
 
 |          | TPtest | FPtest |
 |----------|--------|--------|
-| TPfilter | 16/24  | 1/8    |
-| FPfilter | 0/24   | 2/8    |
+| TPfilter | 16/24  | 2/8    |
+| FPfilter | 0/24   | 1/8    |
 
-> 注：FPfilter 的 2/8 表示 FP 在 TP 布隆过滤器中的命中情况，其中一个测试项在 FP 布隆过滤器中未命中。
+> 注：TPfilter 的 2/8 表示 FP 在 TP 布隆过滤器中的命中情况，其中一个测试项在 FP 布隆过滤器中未命中。
 
 其中 TPfilter 表示 TP 在 TP 布隆过滤器的命中情况，FPfilter 表示 FP 在 TP 布隆过滤器中的命中情况。
 
